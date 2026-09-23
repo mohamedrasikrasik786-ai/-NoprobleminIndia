@@ -703,10 +703,116 @@
     .farm-products-grid{gap:12px;}
     .farm-card{padding:12px 14px;}
     .farm-card-img{max-height:160px;}
+    .pillars-grid{grid-template-columns:repeat(2, 1fr);}
   }
 
   /* Mobile breakpoint (<= 900px) */
   @media (max-width:900px){
+    /* Mobile Story (Figma 1125:629) */
+    .story{
+      background:#fefbf8;
+      padding:0;
+      margin:0;
+    }
+    .story-container{
+      flex-direction:column;
+      min-height:auto;
+      width:100%;
+      margin:0;
+      padding:0;
+    }
+    .story-photo{
+      width:100%;
+      max-width:none;
+      height:clamp(360px, 56vw, 460px);
+      min-height:auto;
+      flex:none;
+      position:relative;
+      margin:0;
+      padding:0;
+      display:block;
+    }
+    .story-photo img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:50% 20%;
+      display:block;
+    }
+    .story-copy{
+      width:100%;
+      max-width:none;
+      height:auto;
+      min-height:auto;
+      flex:none;
+      padding:36px var(--gutter, 24px) 48px;
+      background:#fefbf8;
+    }
+    .story-wrapper{
+      max-width:none;
+      gap:32px;
+    }
+    .story-intro{
+      gap:24px;
+    }
+    .story-label{
+      font-size:26px;
+      color:#17130f;
+    }
+    .story-heading-group{
+      gap:24px;
+    }
+    .story-heading{
+      font-size:38px;
+      line-height:1.05;
+      letter-spacing:-0.57px;
+    }
+    .story-copy p{
+      font-size:18px;
+      line-height:1.35;
+      letter-spacing:-0.09px;
+      color:#503e28;
+    }
+    .story-quote{
+      font-size:29px;
+      line-height:1.3;
+      color:#274833;
+    }
+    .story-signoff{
+      font-size:27px;
+      color:#17130f;
+    }
+
+    /* Mobile Pillars / Mission */
+    .pillars-grid{
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:32px;
+    }
+    .pillar{
+      min-height:auto;
+      padding:32px 24px;
+      gap:36px;
+      border-radius:15px;
+    }
+    .pillar-icon{
+      width:44px;
+      height:44px;
+    }
+    .pillar h3{
+      font-size:24px;
+      line-height:1.08;
+      color:#123c2b;
+    }
+    .pillar p{
+      font-size:18px;
+      line-height:1.35;
+      color:#503e28;
+    }
+
+    /* Mobile Farm / Products (Figma 1113:793) */
     .farm{
       padding-bottom:32px !important;
     }
@@ -724,19 +830,23 @@
       height:auto;
       max-height:520px;
       aspect-ratio:393 / 520;
+      display:block;
     }
     .farm-brand-col picture{
       width:100%;
       height:100%;
+      display:block;
     }
     .farm-brand-img{
       width:100%;
       height:100%;
+      display:block;
+      object-fit:cover;
     }
     .farm-content-col{
       flex:none;
       width:100%;
-      padding:36px var(--gutter) 48px var(--gutter);
+      padding:36px var(--gutter, 24px) 48px var(--gutter, 24px);
       box-sizing:border-box;
     }
     .farm-desc{
@@ -752,8 +862,8 @@
       flex-direction:row;
       gap:10px;
       margin:0 0 28px 0;
-      margin-inline:calc(-1 * var(--gutter));
-      padding-left:var(--gutter);
+      margin-inline:calc(-1 * var(--gutter, 24px));
+      padding-left:var(--gutter, 24px);
       padding-right:0;
       overflow-x:auto;
       -webkit-overflow-scrolling:touch;
@@ -766,7 +876,7 @@
     }
     .farm-categories::after{
       content:"";
-      flex:0 0 var(--gutter);
+      flex:0 0 var(--gutter, 24px);
       display:block;
     }
     .farm-chip{
@@ -779,21 +889,21 @@
       gap:12px;
       scroll-snap-type:x mandatory;
       padding-bottom:0;
-      padding-left:var(--gutter);
+      padding-left:var(--gutter, 24px);
       padding-right:0;
-      scroll-padding-left:var(--gutter);
+      scroll-padding-left:var(--gutter, 24px);
       -webkit-overflow-scrolling:touch;
       scrollbar-width:none;
       -ms-overflow-style:none;
       width:auto;
-      margin-inline:calc(-1 * var(--gutter));
+      margin-inline:calc(-1 * var(--gutter, 24px));
     }
     .farm-products-grid::-webkit-scrollbar{
       display:none;
     }
     .farm-products-grid::after{
       content:"";
-      flex:0 0 var(--gutter);
+      flex:0 0 var(--gutter, 24px);
       display:block;
     }
     .farm-card{
