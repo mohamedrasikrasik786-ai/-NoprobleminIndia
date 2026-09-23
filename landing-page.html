@@ -249,15 +249,19 @@
     margin:0;
     padding:0;
     display:block;
+    opacity:1;
+    clip-path:circle(160% at 0 0);
+    will-change:clip-path, opacity;
+  }
+  .story-photo.reveal-init{
     opacity:0;
     clip-path:circle(0% at 0 0);
-    will-change:clip-path, opacity;
   }
   .story-photo.reveal-active,
   .story-photo.is-revealed{
     opacity:1;
     clip-path:circle(160% at 0 0);
-    transition:clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    transition:clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   }
   .story-photo img{
     position:absolute;
@@ -267,16 +271,18 @@
     object-fit:cover;
     object-position:50% 28%;
     display:block;
-    transform:scale(1.15);
-    transition:transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform:scale(1);
+    transition:transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     will-change:transform;
+  }
+  .story-photo.reveal-init img{
+    transform:scale(1.12);
   }
   .story-photo.reveal-active img,
   .story-photo.is-revealed img{
     transform:scale(1);
   }
-  .story-photo.reveal-active:hover img,
-  .story-photo.is-revealed:hover img{
+  .story-photo:hover img{
     transform:scale(1.025);
     transition:transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -462,15 +468,19 @@
     background:var(--color-dark);
     z-index:2;
     display:block;
+    opacity:1;
+    clip-path:circle(160% at 0 0);
+    will-change:clip-path, opacity;
+  }
+  .farm-brand-col.reveal-init{
     opacity:0;
     clip-path:circle(0% at 0 0);
-    will-change:clip-path, opacity;
   }
   .farm-brand-col.reveal-active,
   .farm-brand-col.is-revealed{
     opacity:1;
     clip-path:circle(160% at 0 0);
-    transition:clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    transition:clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   }
   .farm-brand-col picture{
     width:100%;
@@ -486,16 +496,18 @@
     object-position:center;
     display:block;
     margin:0;
-    transform:scale(1.15);
-    transition:transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform:scale(1);
+    transition:transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     will-change:transform;
+  }
+  .farm-brand-col.reveal-init .farm-brand-img{
+    transform:scale(1.12);
   }
   .farm-brand-col.reveal-active .farm-brand-img,
   .farm-brand-col.is-revealed .farm-brand-img{
     transform:scale(1);
   }
-  .farm-brand-col.reveal-active:hover .farm-brand-img,
-  .farm-brand-col.is-revealed:hover .farm-brand-img{
+  .farm-brand-col:hover .farm-brand-img{
     transform:scale(1.025);
     transition:transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -2543,38 +2555,59 @@
 <script>
   // Scroll reveal observers for Story and Farm Brand images
   try{
-    var observerOptions = {
-      threshold: 0.15,
-      rootMargin: '0px 0px -10% 0px'
-    };
-
-    function attachScrollReveal(el){
+    function setupImageReveal(el){
       if(!el) return;
+      var rect = el.getBoundingClientRect();
+      var winH = window.innerHeight || document.documentElement.clientHeight;
+      
+      // If already in viewport or near it on load, show immediately
+      if(rect.top < winH * 0.85 && rect.bottom > 0){
+        el.classList.add('is-revealed');
+        return;
+      }
+      
+      // Otherwise set to init state and reveal on scroll
+      el.classList.add('reveal-init');
+
       if('IntersectionObserver' in window){
         var obs = new IntersectionObserver(function(entries){
           entries.forEach(function(entry){
             if(entry.isIntersecting){
-              el.classList.add('reveal-active');
+              el.classList.remove('reveal-init');
               el.classList.add('is-revealed');
               obs.unobserve(el);
             }
           });
-        }, observerOptions);
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        });
         obs.observe(el);
       } else {
-        el.classList.add('reveal-active');
+        el.classList.remove('reveal-init');
         el.classList.add('is-revealed');
       }
+
+      // Scroll event fallback for instant reliability
+      function onScrollFallback(){
+        var r = el.getBoundingClientRect();
+        if(r.top < winH * 0.85 && r.bottom > 0){
+          el.classList.remove('reveal-init');
+          el.classList.add('is-revealed');
+          window.removeEventListener('scroll', onScrollFallback);
+        }
+      }
+      window.addEventListener('scroll', onScrollFallback, { passive: true });
     }
 
     var storyPhoto = document.querySelector('.story-photo');
     if(storyPhoto){
-      attachScrollReveal(storyPhoto);
+      setupImageReveal(storyPhoto);
     }
 
     var farmBrandCol = document.querySelector('.farm-brand-col');
     if(farmBrandCol){
-      attachScrollReveal(farmBrandCol);
+      setupImageReveal(farmBrandCol);
     }
   }catch(e){}
   
