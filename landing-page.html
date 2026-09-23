@@ -249,6 +249,15 @@
     margin:0;
     padding:0;
     display:block;
+    opacity:0;
+    clip-path:circle(0% at 0 0);
+    will-change:clip-path, opacity;
+  }
+  .story-photo.reveal-active,
+  .story-photo.is-revealed{
+    opacity:1;
+    clip-path:circle(160% at 0 0);
+    transition:clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   }
   .story-photo img{
     position:absolute;
@@ -258,10 +267,18 @@
     object-fit:cover;
     object-position:50% 28%;
     display:block;
-    transition:transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform:scale(1.15);
+    transition:transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change:transform;
   }
-  .story-photo:hover img{
+  .story-photo.reveal-active img,
+  .story-photo.is-revealed img{
+    transform:scale(1);
+  }
+  .story-photo.reveal-active:hover img,
+  .story-photo.is-revealed:hover img{
     transform:scale(1.025);
+    transition:transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .story-copy{
     flex:0 0 50%;
@@ -441,21 +458,43 @@
     padding:0;
     background:var(--color-dark);
     z-index:2;
+    display:block;
+    opacity:0;
+    clip-path:circle(0% at 0 0);
+    will-change:clip-path, opacity;
+  }
+  .farm-brand-col.reveal-active,
+  .farm-brand-col.is-revealed{
+    opacity:1;
+    clip-path:circle(160% at 0 0);
+    transition:clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
   }
   .farm-brand-col picture{
-    width:608px;
-    height:728px;
+    width:100%;
+    height:100%;
     display:block;
     margin:0;
     padding:0;
   }
   .farm-brand-img{
-    width:608px;
-    height:728px;
+    width:100%;
+    height:100%;
     object-fit:cover;
     object-position:center;
     display:block;
     margin:0;
+    transform:scale(1.15);
+    transition:transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change:transform;
+  }
+  .farm-brand-col.reveal-active .farm-brand-img,
+  .farm-brand-col.is-revealed .farm-brand-img{
+    transform:scale(1);
+  }
+  .farm-brand-col.reveal-active:hover .farm-brand-img,
+  .farm-brand-col.is-revealed:hover .farm-brand-img{
+    transform:scale(1.025);
+    transition:transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .farm-content-col{
     flex:1 1 auto;
@@ -2498,34 +2537,38 @@
 <script>
   // Scroll reveal observers for Story and Farm Brand images
   try{
-    function setupRevealObserver(element){
-      if(!element) return;
+    var observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -10% 0px'
+    };
+
+    function attachScrollReveal(el){
+      if(!el) return;
       if('IntersectionObserver' in window){
-        var observer = new IntersectionObserver(function(entries){
+        var obs = new IntersectionObserver(function(entries){
           entries.forEach(function(entry){
             if(entry.isIntersecting){
-              element.classList.add('is-revealed');
-              observer.unobserve(element);
+              el.classList.add('reveal-active');
+              el.classList.add('is-revealed');
+              obs.unobserve(el);
             }
           });
-        }, {
-          threshold: 0.18,
-          rootMargin: '0px 0px -15% 0px'
-        });
-        observer.observe(element);
+        }, observerOptions);
+        obs.observe(el);
       } else {
-        element.classList.add('is-revealed');
+        el.classList.add('reveal-active');
+        el.classList.add('is-revealed');
       }
     }
 
     var storyPhoto = document.querySelector('.story-photo');
     if(storyPhoto){
-      setupRevealObserver(storyPhoto);
+      attachScrollReveal(storyPhoto);
     }
 
     var farmBrandCol = document.querySelector('.farm-brand-col');
     if(farmBrandCol){
-      setupRevealObserver(farmBrandCol);
+      attachScrollReveal(farmBrandCol);
     }
   }catch(e){}
   
